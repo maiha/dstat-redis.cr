@@ -1,3 +1,7 @@
+require "redis-cluster"
+require "toml"
+require "./ext/**"
+require "./lib/**"
 require "./dstat-redis/*"
 
 module Dstat::Redis

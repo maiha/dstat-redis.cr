@@ -1,0 +1,13 @@
+verbose = false
+
+[dstat]
+prog = "dstat"
+args = "-clmdny --tcp"
+
+[redis]
+host = "127.0.0.1"
+port = 6379
+# pass = "secret"
+cmds = [
+  "SET dstat __json__",
+]
