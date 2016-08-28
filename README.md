@@ -51,34 +51,32 @@ cmds = [
 ```toml
 cmds = [
   "SET dstat __json__",
-  "PUBLISH dstat/timeline __json__",
+  "PUBLISH dstat __json__",
 ]
 ```
 
 ```shell
 % dstat-redis config.toml &
-% redis-cli --raw SUBSCRIBE dstat/timeline
+% redis-cli --raw SUBSCRIBE dstat
 subscribe
-dstat/timeline
+dstat
 1
 message
-dstat/timeline
-{"usr":"0","sys":"0","idl":"99","wai":"0","hiq":"0","siq":"0","1m":"0.15","5m":"0.15","15m":"0.10","used":"1196M","buff":"135M","cach":"7028M","free":"2959M","read":"0","writ":"0","recv":"298B","send":"418B","int":"519","csw":"839","lis":"23","act":"22","syn":"0","tim":"2","clo":"0","epoch":"1472204432"}
-...
+dstat
+{"usr":1,"sys":1,"idl":98,"wai":0,"hiq":0,"siq":0,"1m":0.34,"5m":0.2,"15m":0.14,"used":663000000,"buff":356000000,"cach":788000000,"free":193000000,"read":0,"writ":16000,"recv":1740,"send":1320,"int":374,"csw":474,"lis":19,"act":19,"syn":0,"tim":2,"clo":0,"epoch":1472404633}
 ```
 
-- Oh, it's noisy. Body Template will be implemented in 0.2.
+- Oh, it's noisy. Body Template will be implemented in 0.3.
 - The image is like this.
 
 ```toml
 cmds = [
-  "PUBLISH dstat/timeline mem:{{used}},disk(in={{read}},out={{writ}})",
+  "PUBLISH dstat mem:{{used}},disk(in={{read}},out={{writ}})",
 ]
 ```
 
 ## Restrictions
 
-- All data are stored as String
 - Duplicated keys would be exist (not a valid JSON format)
   - ex: `(mem)used` and `(swap)used` -> `{"used":"10KB",...,"used":"0"}`
 

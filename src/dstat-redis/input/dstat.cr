@@ -2,6 +2,8 @@ class Dstat::Redis::Input::Dstat
   include Input
 
   @args : Array(String)
+
+  delegate type_cast, to: Input
   
   def initialize(@prog : String, option)
     args = option.split(/\s+/)
@@ -31,7 +33,8 @@ class Dstat::Redis::Input::Dstat
           # ["epoch", "used", "buff", "cach", "free", "read", "writ"]
           headers = cols
         else   # stats
-          yield(headers, cols)
+          vals = cols.map{|v| type_cast(v)}
+          yield(headers, vals)
         end
       }
     end
