@@ -4,7 +4,7 @@ class Main
   include Opts
   include Dstat::Redis
 
-  VERSION = "0.1.0"
+  VERSION = "0.1.1"
   PROGRAM = "dstat-redis"
   ARGS    = "config.toml"
 

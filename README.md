@@ -86,9 +86,13 @@ cmds = [
 
 #### 0.2
 
-- [ ] Body Template
+- [ ] Value Types
 
 #### 0.3
+
+- [ ] Body Template
+
+#### 0.4
 
 - [ ] Other Formats
 
