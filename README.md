@@ -57,7 +57,7 @@ cmds = [
 
 ```toml
 cmds = [
-  "SET dstat __json__",
+  "SET     dstat __json__",
   "PUBLISH dstat __json__",
 ]
 ```
@@ -88,23 +88,33 @@ debug: ["PUBLISH", "dstat", "mem:1213000000,disk(in=676,out=33000)"]
 ...
 ```
 
-#### store as epoched stats
+#### store as epoched stats for one day
 
 - vi `config.toml` (add "ZADD" command)
-- NOTE: `CH` option needs Redis 3.0.2 or higher
+- NOTE: ZADD `CH` option needs Redis 3.0.2 or higher
 
 ```toml
 cmds = [
-  "ZADD dstat/__host__/__%Y%m%d-%H__ CH __epoch__ __json__",
+  "ZADD   dstat/__host__/__%Y%m%d-%H__ CH __epoch__ __json__",
+  "EXPIRE dstat/__host__/__%Y%m%d-%H__ 86400",
+  "SADD   dstat/__host__ __%Y%m%d-%H__",
 ]
 ```
 
-- When we need heavy HDD `writ` on some period like between 1472457078 and 1472457081.
 ```shell
-% redis-cli --raw ZRANGE "{MY_HOST}/dstat" 1472457078 1472457075 | jq .writ | sort -nr | head
-33000
-0
-0
+% dstat-redis config.toml -v
+debug: ["ZADD", "dstat/ubuntu/20160829-23", "CH", "1472480308", ...]
+debug: ["SADD", "dstat/ubuntu", "20160829-23"]
+
+% redis-cli SMEMBERS dstat/ubuntu
+1) "20160829-23"
+
+# We can find heavy HDD `writ` on some period between epoch1 and epoch2.
+# For instance, the hostname is `ubuntu` and the period is between 1472480308 and 1472480310.
+% redis-cli --raw ZRANGEBYSCORE "dstat/ubuntu/20160829-23" 1472480308 1472480310 | jq .writ | sort -nr | head
+60000
+16000
+6866
 ```
 
 ## Restrictions

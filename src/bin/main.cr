@@ -35,27 +35,8 @@ class Main
   end
 
   private def output
-    redis = redis_connect(str("redis/host"), int("redis/port"), str?("redis/pass"))
+    redis = Redis::Cluster.connect(str("redis/host"), int("redis/port"), password: str?("redis/pass"))
     Output::Redis.new(redis, strs("redis/cmds"), verbose: bool("verbose"))
-  end
-  
-  private def redis_connect(host, port, pass)
-    STDOUT.print "Connecting #{host}:#{port} ... "
-    redis = ::Redis.new(host, port, password: pass)
-    STDOUT.puts "OK"
-
-    begin
-      redis.command(["cluster", "nodes"])
-    rescue e : Redis::Error
-      if /This instance has cluster support disabled/ === e.message
-        return redis
-      else
-        # Just raise it because it would be a connection problem like AUTH error.
-        raise e
-      end
-    end
-
-    return ::Redis::Cluster.new("#{host}:#{port}", password: pass)
   end
 end
 
