@@ -1,4 +1,4 @@
-# dstat-redis
+# dstat-redis [![Build Status](https://travis-ci.org/maiha/dstat-redis.cr.svg?branch=master)](https://travis-ci.org/maiha/dstat-redis.cr)
 
 Store dstat output into redis as JSON string.
 
@@ -84,7 +84,7 @@ cmds = [
 
 #### 0.2
 
-- [ ] Value Types
+- [x] Value Types
 
 #### 0.3
 
