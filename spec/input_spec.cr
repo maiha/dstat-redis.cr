@@ -25,5 +25,12 @@ describe Dstat::Redis::Input do
     it "float" do
       type_cast("0.25").should eq(0.25)
     end
+
+    it "float with unit" do
+      type_cast("18.6B").should eq(18.6)
+      type_cast("18.6K").should eq(18_600)
+      type_cast("18.6M").should eq(18_600_000)
+      type_cast("18.6G").should eq(18_600_000_000)
+    end
   end
 end

@@ -30,6 +30,13 @@ cmds = [
 ]
 ```
 
+#### Dynamic Value
+
+- `__json__` : a runtime dstat data as JSON
+- `__host__` : a running host name
+- `__XXXX__` : a dstat value correspond to the field (ex. `__epoch__`)
+- `__%Y%m__` : keywords that starts with '%' will be passed to `strftime(3)` with dstat[epoch]
+
 ## Usage
 
 #### basic
@@ -66,18 +73,43 @@ dstat
 {"usr":1,"sys":1,"idl":98,"wai":0,"hiq":0,"siq":0,"1m":0.34,"5m":0.2,"15m":0.14,"used":663000000,"buff":356000000,"cach":788000000,"free":193000000,"read":0,"writ":16000,"recv":1740,"send":1320,"int":374,"csw":474,"lis":19,"act":19,"syn":0,"tim":2,"clo":0,"epoch":1472404633}
 ```
 
-- Oh, it's noisy. Body Template will be implemented in 0.3.
-- The image is like this.
+- Oh, it's noisy. Body Template will be good use for this case.
 
 ```toml
 cmds = [
-  "PUBLISH dstat mem:{{used}},disk(in={{read}},out={{writ}})",
+  "PUBLISH dstat mem:__used__,disk(in=__read__,out=__writ__)",
 ]
+```
+
+```shell
+% dstat-redis config.toml -v
+Connecting 127.0.0.1:6379 ... OK
+debug: ["PUBLISH", "dstat", "mem:1213000000,disk(in=676,out=33000)"]
+...
+```
+
+#### store as epoched stats
+
+- vi `config.toml` (add "ZADD" command)
+- NOTE: `CH` option needs Redis 3.0.2 or higher
+
+```toml
+cmds = [
+  "ZADD dstat/__host__/__%Y%m%d-%H__ CH __epoch__ __json__",
+]
+```
+
+- When we need heavy HDD `writ` on some period like between 1472457078 and 1472457081.
+```shell
+% redis-cli --raw ZRANGE "{MY_HOST}/dstat" 1472457078 1472457075 | jq .writ | sort -nr | head
+33000
+0
+0
 ```
 
 ## Restrictions
 
-- Duplicated keys would be exist (not a valid JSON format)
+- json : Duplicated keys would be exist (not a valid JSON format)
   - ex: `(mem)used` and `(swap)used` -> `{"used":"10KB",...,"used":"0"}`
 
 ## Roadmap
@@ -88,7 +120,7 @@ cmds = [
 
 #### 0.3
 
-- [ ] Body Template
+- [x] Body Template
 
 #### 0.4
 

@@ -6,10 +6,10 @@ class Dstat::Redis::Output::Redis
   def initialize(@redis : Connection, @commands : Array(String), @verbose : Bool = false)
   end
 
-  def output(payload : String)
+  def output(map : Mapping, format : Format)
+    found = map.keys.to_set
     @commands.each do |cmd|
-      cmd  = cmd.gsub(/__json__/, payload)
-      args = cmd.split(/\s+/)
+      args = cmd.split(/\s+/).map{|c| format.format(c, map)}
       STDOUT.puts "debug: #{args.inspect}" if @verbose
       @redis.command(args)
     end

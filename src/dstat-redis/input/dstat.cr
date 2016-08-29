@@ -34,7 +34,8 @@ class Dstat::Redis::Input::Dstat
           headers = cols
         else   # stats
           vals = cols.map{|v| type_cast(v)}
-          yield(headers, vals)
+          hash = headers.zip(vals).to_h # TODO: perfomance tuning
+          yield(hash)
         end
       }
     end

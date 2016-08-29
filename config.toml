@@ -8,7 +8,11 @@ args = "-clmdny --tcp"
 host = "127.0.0.1"
 port = 6379
 # pass = "secret"
+
+# [CH] option needs Redis 3.0.2 or higher
 cmds = [
   "SET     dstat __json__",
-# "PUBLISH dstat __json__",
+# "PUBLISH dstat mem:__used__,disk(in=__read__,out=__writ__)",
+# "ZADD   dstat/__host__/__%Y%m%d-%H__ CH __epoch__ __json__",
+# "SADD   dstat/__host__ dstat/__host__/__%Y%m%d-%H__",  # mark ZKEY for deletion
 ]

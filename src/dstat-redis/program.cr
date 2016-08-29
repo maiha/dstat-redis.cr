@@ -3,9 +3,8 @@ class Dstat::Redis::Program
   end
 
   def run
-    @input.input do |keys, vals|
-      payload = @format.format(keys, vals)
-      @output.output(payload)
+    @input.input do |val|
+      @output.output(val, @format)
     end
   end
 end
