@@ -1,6 +1,4 @@
 module Dstat::Redis::Input
-  alias Type = String | Int32 | Int64 | Float64
-
   def self.type_cast(v)
     case v
     when /^(\d+)B?$/i then $1.to_i

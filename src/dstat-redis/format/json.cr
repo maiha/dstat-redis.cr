@@ -5,7 +5,7 @@ class Dstat::Redis::Format::Json
 
   @format : String?
   
-  def format(keys : Array(String), vals : Array(Input::Type))
+  def format(keys : Array(String), vals : Array(Value))
     @format ||= compile(keys)
     @format.not_nil! % vals.map(&.to_json)
   end
