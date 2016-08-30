@@ -6,14 +6,14 @@ module Periodical
 
     @stopped_at : Time?
 
-    def initialize(@total : Int32, @index : Int32 = 0, @ok : Int32 = 0, @ko : Int32 = 0, @errors : Set(String) = Set(String).new, @color : Bool = true, @span : Time::Span = Time::Span::Zero)
+    def initialize(@total : Int32? = nil, @index : Int32 = 0, @ok : Int32 = 0, @ko : Int32 = 0, @errors : Set(String) = Set(String).new, @color : Bool = true, @span : Time::Span = Time::Span::Zero, @time_format : String = "%H:%M:%S")
       @started_at = Time.now
       @count = 0
     end
 
     def next
       done!
-      StatusCounter.new(@total, @index)
+      self.class.new(total: @total, index: @index, time_format: @time_format)
     end
 
     def ok!(span)
@@ -41,11 +41,19 @@ module Periodical
     def status
       err = ko > 0 ? "# KO: #{ko}" : ""
       now = @stopped_at || Time.now
-      hms = now.to_s("%H:%M:%S")
+      hms = now.to_s(@time_format)
       if done?
-        msg = "%s done %d in %.1f sec (%s) %s" % [hms, @total, sec, qps, err]
+        if @total
+          msg = "%s done %d in %.1f sec (%s) %s" % [hms, total, sec, qps, err]
+        else
+          msg = "%s done %.1f sec (%s) %s" % [hms, sec, qps, err]
+        end
       else
-        msg = "%s [%03.1f%%] %d/%d (%s) %s" % [hms, pct, @index, @total, qps, err]
+        if @total
+          msg = "%s [%03.1f%%] %d/%d (%s) %s" % [hms, pct, @index, total, qps, err]
+        else
+          msg = "%s %d (OK:%d, KO=%d) %.1f sec (%s) %s" % [hms, count, ok, ko, sec, qps, err]
+        end
       end
       colorize(msg)
     end
@@ -64,14 +72,20 @@ module Periodical
     
     def summarize
       String.build do |io|
-        hms  = @started_at.to_s("%H:%M:%S")
-        io << "%s (OK:%s, KO:%s) [%s +%s]" % [qps, ok, ko, hms, spent_hms]
+        hms = @started_at.to_s(@time_format)
+        t1  = @started_at.epoch
+        t2  = stopped_at.epoch
+        io << "%s (OK:%s, KO:%s) [%s +%s](%d - %d)" % [qps, ok, ko, hms, spent_hms, t1, t2]
         io << " # #{errors.first}" if errors.any?
       end
     end
+
+    def total
+      @total.not_nil!
+    end
     
     def pct
-      [@index * 100.0 / @total, 100.0].min
+      [@index * 100.0 / total, 100.0].min
     end
 
     def spent(now = @stopped_at || Time.now)
@@ -103,14 +117,13 @@ module Periodical
       end
     end
   end
-  
-  class Reporter
-    getter total
 
-    def initialize(@interval : Time::Span, max : Int32, @io : IO? = STDOUT)
-      @total   = StatusCounter.new(max)
-      @current = StatusCounter.new(max)
-      raise "#{self.class} expects max > 0, bot got #{max}" unless max > 0
+  class Reporter
+    def initialize(@interval : Time::Span, max : Int32? = nil, @io : IO? = STDOUT, @color : Bool = true, @time_format : String = "%H:%M:%S")
+      raise "#{self.class} expects max > 0, bot got #{max}" if max.try(&.<= 0)
+
+      @total   = StatusCounter.new(total: max, time_format: @time_format)
+      @current = StatusCounter.new(total: max, time_format: @time_format)
     end
 
     def succ
@@ -126,9 +139,20 @@ module Periodical
       report
     end
 
+    macro color_method(name, color)
+      def {{name.id}}(msg, time : Bool = true)
+        write(msg, time: time, color: {{color}})
+      end
+    end
+
+    color_method(debug, nil)
+    color_method(info , :green)
+    color_method(warn , :yellow)
+    color_method(error, :red)
+
     def report
       if @current.spent > @interval
-        @io.try(&.puts @current.status).try(&.flush)
+        write(@current.status)
         @current = @current.next
       end
     end
@@ -136,7 +160,14 @@ module Periodical
     def done
       @current.done!
       @total.done!
-      @io.try(&.puts @total.status)
+      write(@total.status)
+    end
+
+    protected def write(msg, time : Bool = false, color : Symbol? = nil)
+      msg = "#{Time.now.to_local.to_s(@time_format)} #{msg}" if time
+      msg = msg.colorize(color) if @color && color
+      @io.try(&.puts msg)
+      @io.try(&.flush)
     end
   end
 end

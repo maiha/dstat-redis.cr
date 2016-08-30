@@ -15,10 +15,20 @@ class Dstat::Redis::Input::Dstat
     @headers = [] of String
   end
 
+  class Skip < Exception
+  end
+  
   def input : Nil
     Process.run(@prog, @args) do |dstat|
       loop {
-        yield Try(Mapping).try { process(dstat.output) }
+        begin
+          value = process(dstat.output)
+          yield Try(Mapping).try { value }
+        rescue Skip
+          next
+        rescue err
+          yield Failure(Mapping).new(err)
+        end
       }
     end
     nil
@@ -37,12 +47,12 @@ class Dstat::Redis::Input::Dstat
     # [line:3] "1472196576|1192M  132M 7024M 2969M| 728B   35k\n"
     case @line_count
     when 1 # skip
-      raise "NOP (#{@line_count})"
+      raise Skip.new("#{@line_count}")
 
     when 2 # header
       # ["epoch", "used", "buff", "cach", "free", "read", "writ"]
       @headers = cols
-      raise "NOP: headers found (#{@line_count})"
+      raise Skip.new("headers found (#{@line_count})")
 
     else   # stats
       vals = cols.map{|v| type_cast(v)}

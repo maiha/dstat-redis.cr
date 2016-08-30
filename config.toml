@@ -16,3 +16,7 @@ cmds = [
 #  "EXPIRE  dstat/__host__/__%Y%m%d-%H__ 86400",
 #  "SADD    dstat/__host__ __%Y%m%d-%H__",
 ]
+
+[log]
+interval_sec = 3
+time_format = "%Y-%m-%d %H:%M:%S"
