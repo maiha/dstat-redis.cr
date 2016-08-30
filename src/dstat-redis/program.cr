@@ -3,9 +3,18 @@ class Dstat::Redis::Program
   end
 
   def run
-    @input.input do |val|
-      @output.output(val, @format)
+    @input.input do |tval|
+      result = tval.map{|val| @output.output(val, @format)}
+      report(result)
+    end
+  end
+
+  # TODO
+  private def report(result)
+    case result
+    when Success
+    when Failure
+    else
     end
   end
 end
-

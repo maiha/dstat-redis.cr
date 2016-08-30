@@ -7,11 +7,13 @@ class Dstat::Redis::Output::Redis
   end
 
   def output(map : Mapping, format : Format)
-    found = map.keys.to_set
-    @commands.each do |cmd|
-      args = cmd.split(/\s+/).map{|c| format.format(c, map)}
-      STDOUT.puts "debug: #{args.inspect}" if @verbose
-      @redis.command(args)
-    end
+    Try(Array(String)).try {
+      found = map.keys.to_set
+      @commands.map do |cmd|
+        args = cmd.split(/\s+/).map{|c| format.format(c, map)}
+        STDOUT.puts "debug: #{args.inspect}" if @verbose
+        @redis.command(args).to_s
+      end
+    }
   end
 end
