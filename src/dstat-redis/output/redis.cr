@@ -1,7 +1,7 @@
 class Dstat::Redis::Output::Redis
   include Output
 
-  def initialize(@redis : Redis::Client, @commands : Array(String), @format : Format)
+  def initialize(@redis : ::Redis::Client, @commands : Array(String), @format : Format)
   end
 
   def output(map : Mapping)
