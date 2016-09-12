@@ -36,7 +36,10 @@ class Dstat::Redis::Input::Dstat
 
   private def process(output)
     line = output.gets
-    raise "line is nil (#{@line_count})" if line.nil?
+    if line.nil?
+      sleep 3                   # avoid infinite loop
+      raise "line is nil (#{@line_count})"
+    end
 
     @line_count += 1
     line = line.as(String).chomp

@@ -52,7 +52,7 @@ class Failure(T) < Try(T)
     true
   end
   
-  def map(&block)
+  def map(&block : T -> U)
     self
   end
 
