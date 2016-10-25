@@ -12,7 +12,7 @@ dependencies:
 
   toml-config:
     github: maiha/toml-config.cr
-    version: 0.1.0
+    version: 0.2.0
 
 authors:
   - maiha <maiha@wota.jp>
