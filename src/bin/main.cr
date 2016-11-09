@@ -1,4 +1,5 @@
 require "../dstat-redis"
+require "opts"
 require "toml-config"
 
 class Main
