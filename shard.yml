@@ -4,7 +4,11 @@ version: 0.4.2
 dependencies:
   redis-cluster:
     github: maiha/redis-cluster.cr
-    version: 0.6.7
+    version: 0.6.8
+
+  try:
+    github: maiha/try.cr
+    version: 0.1.0
 
   toml-config:
     github: maiha/toml-config.cr

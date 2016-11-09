@@ -1,4 +1,5 @@
 require "redis-cluster"
+require "try"
 require "./lib/**"
 
 module Dstat::Redis
