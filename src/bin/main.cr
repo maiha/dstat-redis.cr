@@ -6,8 +6,8 @@ class Main
   include Opts
   include Dstat::Redis
 
-  VERSION = "0.4.3"
-  PROGRAM = "dstat-redis"
+  VERSION = Shard.version
+  PROGRAM = Shard.program
   ARGS    = "config.toml"
 
   option verbose : Bool, "-v", "Verbose output", false
