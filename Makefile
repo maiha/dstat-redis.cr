@@ -30,3 +30,7 @@ clean:
 
 version:
 	./bin/dstat-redis --version
+
+.PHONY : check_version_mismatch
+check_version_mismatch: shard.yml README.md
+	diff -w -c <(grep version: README.md | head -1) <(grep ^version: shard.yml)
