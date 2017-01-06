@@ -2,12 +2,12 @@
 
 Store dstat output into redis as JSON string.
 
-- crystal: 0.20.1
-- binary download: https://github.com/maiha/dstat-redis.cr/releases
+- crystal: 0.20.4
+- x86_64 binary: https://github.com/maiha/dstat-redis.cr/releases
 
 ## Features
 
-- Handy : just one x86 binary (no fluentd or Ruby needed)
+- Handy : just one x86_64 binary (no fluentd or Ruby needed)
 
 ## Config
 

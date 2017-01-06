@@ -4,23 +4,11 @@ version: 0.4.4
 dependencies:
   redis-cluster:
     github: maiha/redis-cluster.cr
-    version: 0.6.9
+    version: 0.7.2
 
-  try:
-    github: maiha/try.cr
-    version: 0.2.0
-
-  opts:
-    github: maiha/opts.cr
-    version: 0.1.1
-
-  toml-config:
-    github: maiha/toml-config.cr
-    version: 0.2.0
-
-  shard:
-    github: maiha/shard.cr
-    version: 0.1.1
+  app:
+    github: maiha/app.cr
+    version: 0.3.2
 
 authors:
   - maiha <maiha@wota.jp>
