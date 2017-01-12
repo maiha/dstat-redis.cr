@@ -8,7 +8,7 @@ class Dstat::Redis::Input::Dstat
   def initialize(@prog : String, option)
     args = option.split(/\s+/)
     # add parameters for input that we want
-    @args = args + ["-T", "--noheaders", "--nocolor", "--noupdate"]
+    @args = ["--noheaders", "--nocolor", "--noupdate"] + args + ["-T"]
 
     # counter to skip leading headers
     @line_count = 0_i64
@@ -19,6 +19,7 @@ class Dstat::Redis::Input::Dstat
   end
   
   def input : Nil
+    print "[input] start process: #{@prog} #{@args.inspect}"
     Process.run(@prog, @args) do |dstat|
       loop {
         begin
