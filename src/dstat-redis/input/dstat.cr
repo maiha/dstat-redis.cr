@@ -58,6 +58,9 @@ class Dstat::Redis::Input::Dstat
       raise Skip.new("headers found (#{@line_count})")
 
     else   # stats
+      if @headers.size != cols.size
+        raise "stats size mismatch: headers=%d, cols=%d (%s, %s)" % [@headers.size, cols.size, @headers.inspect, cols.inspect]
+      end
       vals = cols.map{|v| type_cast(v)}
       hash = @headers.zip(vals).to_h # TODO: perfomance tuning
       return hash
