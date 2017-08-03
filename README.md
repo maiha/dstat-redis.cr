@@ -28,6 +28,10 @@ port = 6379
 cmds = [
   "SET dstat __json__",
 ]
+
+[log]
+interval_sec = 3
+time_format = "%Y-%m-%d %H:%M:%S"
 ```
 
 #### Dynamic Value
