@@ -2,7 +2,7 @@
 
 Store dstat output into redis as JSON string.
 
-- crystal: 0.20.4
+- crystal: 0.26.1
 - x86_64 binary: https://github.com/maiha/dstat-redis.cr/releases
 
 ## Features
