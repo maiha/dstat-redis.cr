@@ -2,7 +2,6 @@
 /doc/
 /lib/
 /libs/
-/shard.lock
 /.crystal/
 /.shards/
 /.crystal-version

@@ -14,7 +14,7 @@ class Main
 
   @config : TOML::Config?
   getter! config
-  delegate str, str?, strs, int, bool, to: config
+  delegate str, str?, strs, i32, bool, to: config
   
   def run
     @config = TOML::Config.parse_file(args.shift { die "config not found!" })
@@ -27,13 +27,13 @@ class Main
   end
 
   private def output
-    redis = Redis::Client.new(str("redis/host"), int("redis/port"), password: str?("redis/pass"))
+    redis = Redis::Client.new(str("redis/host"), i32("redis/port"), password: str?("redis/pass"))
     format = Dstat::Redis::Format::Json.new
     Output::Redis.new(redis, strs("redis/cmds"), format)
   end
 
   private def report
-    Periodical::Reporter.new(interval: int("log/interval_sec").seconds, time_format: str("log/time_format"))
+    Periodical::Reporter.new(interval: i32("log/interval_sec").seconds, time_format: str("log/time_format"))
   end
 end
 

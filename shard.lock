@@ -1,0 +1,54 @@
+version: 1.0
+shards:
+  app:
+    github: maiha/app.cr
+    version: 0.5.0
+
+  core-ext:
+    github: maiha/core-ext.cr
+    version: 0.3.0
+
+  crc16:
+    github: maiha/crc16.cr
+    version: 0.1.0
+
+  opts:
+    github: maiha/opts.cr
+    version: 0.6.0
+
+  pool:
+    github: ysbaddaden/pool
+    version: 0.2.3
+
+  pretty:
+    github: maiha/pretty.cr
+    version: 0.9.8
+
+  redis:
+    github: maiha/crystal-redis
+    version: 2.6.0
+
+  redis-cluster:
+    github: maiha/redis-cluster.cr
+    version: 0.8.3
+
+  shard:
+    github: maiha/shard.cr
+    version: 0.3.1
+
+  toml:
+    github: maiha/toml.cr
+    version: 0.6.2
+
+  toml-config:
+    github: maiha/toml-config.cr
+    version: 0.6.1
+
+  try:
+    github: maiha/try.cr
+    version: 0.3.0
+
+  var:
+    github: maiha/var.cr
+    version: 1.2.0
+

@@ -16,7 +16,7 @@ class Dstat::Redis::Format::Json
       elsif map[$1]?
         map[$1]
       elsif $1.starts_with?("%")
-        Time.epoch(map["epoch"].to_i).to_local.to_s($1)
+        Pretty.epoch(map["epoch"].to_i).to_local.to_s($1)
       else
         "__#{$1}__"
       end
